@@ -1,16 +1,46 @@
 <div id="comments-list" xmlns:th="http://www.thymeleaf.org" th:fragment="commentsList" class="space-y-4">
-    <div th:each="comment : ${comments}" class="bg-white p-4 rounded shadow flex items-start space-x-4">
+    <div th:each="comment : ${comments}" class="bg-white p-4 rounded shadow flex items-start space-x-4 relative">
         <img th:if="${comment.userAvatarUrl != null}" th:src="${comment.userAvatarUrl}" alt="Avatar" class="w-10 h-10 rounded-full">
         <div th:unless="${comment.userAvatarUrl != null}" class="w-10 h-10 rounded-full bg-gray-300 flex items-center justify-center text-white font-bold" th:text="${#strings.substring(comment.userName, 0, 1)}">A</div>
-        <div>
+        <div class="flex-grow">
             <div class="flex items-baseline space-x-2">
                 <h4 class="font-bold text-gray-900" th:text="${comment.userName}">User Name</h4>
                 <span class="text-xs text-gray-500" th:text="${comment.createdAt}">Time</span>
             </div>
-            <p class="text-gray-800 mt-1" th:text="${comment.text}">Comment text</p>
+            <p class="text-gray-800 mt-1 whitespace-pre-wrap" th:text="${comment.text}">Comment text</p>
+        </div>
+        
+        <div th:if="${user != null and (user.attributes['sub'] == comment.userId or user.name == comment.userId)}" class="absolute top-4 right-4 flex space-x-4">
+            <button th:attr="hx-get=@{/discussion/comments/{id}/edit(id=${comment.id})}"
+                    hx-target="closest .bg-white" hx-swap="outerHTML"
+                    class="text-indigo-500 hover:text-indigo-700 transition text-sm">
+                Edit
+            </button>
+            <button th:attr="hx-delete=@{/discussion/comments/{id}(id=${comment.id})}"
+                    hx-target="#comments-list" hx-swap="outerHTML"
+                    class="text-red-500 hover:text-red-700 transition text-sm">
+                Delete
+            </button>
         </div>
     </div>
     <div th:if="${#lists.isEmpty(comments)}" class="text-gray-500">
         No comments yet. Be the first to start the discussion!
+    </div>
+</div>
+
+<div th:fragment="editForm" xmlns:th="http://www.thymeleaf.org" class="bg-indigo-50 p-4 rounded shadow flex items-start space-x-4 relative border border-indigo-200">
+    <img th:if="${comment.userAvatarUrl != null}" th:src="${comment.userAvatarUrl}" alt="Avatar" class="w-10 h-10 rounded-full">
+    <div th:unless="${comment.userAvatarUrl != null}" class="w-10 h-10 rounded-full bg-gray-300 flex items-center justify-center text-white font-bold" th:text="${#strings.substring(comment.userName, 0, 1)}">A</div>
+    <div class="flex-grow">
+        <form th:attr="hx-put=@{/discussion/comments/{id}(id=${comment.id})}" hx-target="#comments-list" hx-swap="outerHTML" class="w-full">
+            <input th:if="${_csrf != null}" type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+            <div class="mb-2">
+                <textarea name="text" required rows="3" class="w-full border border-indigo-300 rounded px-3 py-2 focus:outline-none focus:border-indigo-500" placeholder="Comment" th:text="${comment.text}"></textarea>
+            </div>
+            <div class="flex space-x-2">
+                <button type="submit" class="bg-indigo-600 text-white py-1 px-3 rounded hover:bg-indigo-700 transition text-sm">Save</button>
+                <button type="button" hx-get="/discussion/comments/list" hx-target="#comments-list" hx-swap="outerHTML" class="bg-gray-400 text-white py-1 px-3 rounded hover:bg-gray-500 transition text-sm">Cancel</button>
+            </div>
+        </form>
     </div>
 </div>

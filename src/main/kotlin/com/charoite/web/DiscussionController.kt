@@ -35,6 +35,64 @@ class DiscussionController(private val commentService: CommentService) {
         
         commentService.createComment(googleId, name, avatarUrl, text)
         model.addAttribute("comments", commentService.findAllComments())
+        model.addAttribute("user", principal)
+        return "fragments/comments :: commentsList"
+    }
+
+    @DeleteMapping("/comments/{id}")
+    fun deleteComment(
+        @AuthenticationPrincipal principal: OAuth2User?,
+        @PathVariable id: String,
+        model: Model
+    ): String {
+        if (principal == null) return "redirect:/login"
+        val googleId = principal.attributes["sub"] as? String ?: principal.name
+        commentService.deleteComment(googleId, id)
+        model.addAttribute("comments", commentService.findAllComments())
+        model.addAttribute("user", principal)
+        return "fragments/comments :: commentsList"
+    }
+
+    @GetMapping("/comments/{id}/edit")
+    fun editCommentForm(
+        @AuthenticationPrincipal principal: OAuth2User?,
+        @PathVariable id: String,
+        model: Model
+    ): String {
+        if (principal == null) return "redirect:/login"
+        val googleId = principal.attributes["sub"] as? String ?: principal.name
+        val comment = commentService.getComment(googleId, id)
+        if (comment != null) {
+            model.addAttribute("comment", comment)
+            return "fragments/comments :: editForm"
+        }
+        return "redirect:/discussion"
+    }
+
+    @PutMapping("/comments/{id}")
+    fun updateComment(
+        @AuthenticationPrincipal principal: OAuth2User?,
+        @PathVariable id: String,
+        @RequestParam text: String,
+        model: Model
+    ): String {
+        if (principal == null) return "redirect:/login"
+        val googleId = principal.attributes["sub"] as? String ?: principal.name
+        commentService.updateComment(googleId, id, text)
+        model.addAttribute("comments", commentService.findAllComments())
+        model.addAttribute("user", principal)
+        return "fragments/comments :: commentsList"
+    }
+
+    @GetMapping("/comments/list")
+    fun listComments(
+        @AuthenticationPrincipal principal: OAuth2User?,
+        model: Model
+    ): String {
+        model.addAttribute("comments", commentService.findAllComments())
+        if (principal != null) {
+            model.addAttribute("user", principal)
+        }
         return "fragments/comments :: commentsList"
     }
 }
