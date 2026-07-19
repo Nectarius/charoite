@@ -1,6 +1,6 @@
-package com.example.charoite.service
+package com.charoite.service
 
-import com.example.charoite.domain.Comment
+import com.charoite.domain.Comment
 import com.mongodb.client.MongoCollection
 import com.mongodb.client.MongoDatabase
 import org.springframework.stereotype.Service

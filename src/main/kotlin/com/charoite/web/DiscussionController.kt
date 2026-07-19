@@ -1,6 +1,6 @@
-package com.example.charoite.web
+package com.charoite.web
 
-import com.example.charoite.service.CommentService
+import com.charoite.service.CommentService
 import org.springframework.security.core.annotation.AuthenticationPrincipal
 import org.springframework.security.oauth2.core.user.OAuth2User
 import org.springframework.stereotype.Controller

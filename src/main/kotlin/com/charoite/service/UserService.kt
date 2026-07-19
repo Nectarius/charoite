@@ -1,6 +1,6 @@
-package com.example.charoite.service
+package com.charoite.service
 
-import com.example.charoite.domain.User
+import com.charoite.domain.User
 import com.mongodb.client.MongoCollection
 import com.mongodb.client.MongoDatabase
 import com.mongodb.client.model.Filters.eq

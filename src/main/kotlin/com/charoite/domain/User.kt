@@ -1,4 +1,4 @@
-package com.example.charoite.domain
+package com.charoite.domain
 
 import org.bson.codecs.pojo.annotations.BsonId
 import org.bson.types.ObjectId

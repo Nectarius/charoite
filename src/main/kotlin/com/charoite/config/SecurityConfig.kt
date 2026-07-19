@@ -1,6 +1,6 @@
-package com.example.charoite.config
+package com.charoite.config
 
-import com.example.charoite.service.UserService
+import com.charoite.service.UserService
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.security.config.annotation.web.builders.HttpSecurity

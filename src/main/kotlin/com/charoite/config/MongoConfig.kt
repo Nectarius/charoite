@@ -1,4 +1,4 @@
-package com.example.charoite.config
+package com.charoite.config
 
 import com.mongodb.client.MongoClient
 import com.mongodb.client.MongoClients
