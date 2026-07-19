@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" th:fragment="layout(content)">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Charoite</title>
+    <meta th:if="${_csrf != null}" name="_csrf" th:content="${_csrf.token}"/>
+    <meta th:if="${_csrf != null}" name="_csrf_header" th:content="${_csrf.headerName}"/>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/htmx.org@1.9.10"></script>
+</head>
+<body class="bg-gray-50 text-gray-900 font-sans antialiased htmx-added">
+    <nav class="bg-indigo-600 p-4 text-white shadow-md">
+        <div class="container mx-auto flex justify-between items-center">
+            <a href="/" class="text-2xl font-bold">Charoite</a>
+            <div class="space-x-4">
+                <a href="/discussion" class="hover:underline">Discussion</a>
+                <a href="/dashboard" class="hover:underline">Dashboard</a>
+                <span th:if="${#authorization.expression('isAuthenticated()')}">
+                    <form th:action="@{/logout}" method="post" class="inline">
+                        <input th:if="${_csrf != null}" type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+                        <button type="submit" class="hover:underline">Logout</button>
+                    </form>
+                </span>
+                <span th:unless="${#authorization.expression('isAuthenticated()')}">
+                    <a href="/login" class="hover:underline">Login</a>
+                </span>
+            </div>
+        </div>
+    </nav>
+    <main class="container mx-auto mt-8 p-4">
+        <div th:replace="${content}"></div>
+    </main>
+    <script>
+        document.body.addEventListener('htmx:configRequest', (event) => {
+            const csrfHeader = 'X-CSRF-TOKEN';
+            const csrfTokenMeta = document.querySelector('meta[name="_csrf"]');
+            if (csrfTokenMeta) {
+                event.detail.headers[csrfHeader] = csrfTokenMeta.content;
+            }
+        });
+    </script>
+</body>
+</html>

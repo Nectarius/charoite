@@ -1,0 +1,20 @@
+spring:
+  config:
+    import: optional:file:.env[.properties]
+  application:
+    name: charoite
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id: ${GOOGLE_CLIENT_ID:placeholder-client-id}
+            client-secret: ${GOOGLE_CLIENT_SECRET:placeholder-client-secret}
+            scope: profile, email
+
+mongodb:
+  uri: ${MONGODB_URI:mongodb://localhost:27017/charoite}
+  db: ${MONGODB_DB:charoite}
+
+server:
+  port: 7777
